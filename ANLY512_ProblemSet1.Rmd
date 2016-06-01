@@ -1,0 +1,118 @@
+---
+title: "ANLY 512 - Problem Set 1"
+subtitle: "Anscombe's quartet"
+author: "Dean D'souza"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Rmarkdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com> and be sure to download the [**Rmarkdown Cheatsheet**](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) developed by Rstudio.  A more detailed reference guide to Rmarkdown can be obtained [here](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf)
+
+Rmarkdown is run on a package called `knitr()`.  `knitr()` is a powerful tool for creating reports and summaries of your quantiative research, and it is an important part of a **reproducible research** toolbox.  The `Knitr` package was developed by [Yihui Xie](http://yihui.name/knitr/) a statistics Ph.D. who now works at Rstudio.  We will discuss the subject of **reproducible research** in greater depth in two weeks.  But for now we are simpling going to get comfortable with the primary reproducible research tool for `R` which is the `knitr` package.  
+
+Since many of you are using **Rstudio** you will benefit from the tight integration which the Rstudio interface has with the `knitr` package.  For instance in the toolbar above the text editor quadrant of the Rstudio interface you will see a "Knit" button.  That essentially executes `knitr` package commands in the background allowing the user to create reports and package output without having to execute commands in the `R` console. A great resource for more details on the `knitr` package is [knitr in a knutshell](http://kbroman.org/knitr_knutshell/) by [Karl Browman](http://kbroman.org/), or for a longer exposition you could read
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+summary(cars)
+```
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE, fig.width=4, fig.height=3}
+plot(cars)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+## Objectives
+
+The objectives of this problem set is to orient you to a number of activities in `R`.  And to conduct a thoughtful exercise in appreciating the importance of data visualization.  For each question create a code chunk or text response that completes/answers the activity or question requested. Finally, upon completion name your final output `.html` file as: `YourName_ANLY512-50_SU2016.html` and upload it to the "Problem Set 1" assignment on Moodle.
+
+
+
+## Questions
+
+##### 1. Anscombes quartet is a set of 4 $x,y$ data sets that were published by *Francis Anscombe* in a 1973 paper [*Graphs in statistical analysis*](https://www.jstor.org/stable/2682899?seq=1#page_scan_tab_contents).  For this first question load the `anscombe` data that is part of the `library(datasets)` in `R`.  And assign that data to a new object called `data`.
+
+```{r, message=FALSE, warning=FALSE}
+library(datasets)
+data(anscombe)
+data<-anscombe
+```
+
+##### 2. Summarise the data by calculating the mean, variance, for each column and the correlation between each pair (eg. x1 and y1, x2 and y2, etc) (Hint: use the `fBasics()` package!)
+
+We use the basicStats() and correlationTest() functions in the fBasics() package to calculate the required statistics.
+
+```{r, message=FALSE, warning=FALSE}
+library(fBasics)
+basicStats(data)
+correlationTest(data$x1,data$y1, method=c("pearson","kendall","spearman"))
+correlationTest(data$x2,data$y2, method=c("pearson","kendall","spearman"))
+correlationTest(data$x3,data$y3, method=c("pearson","kendall","spearman"))
+correlationTest(data$x4,data$y4, method=c("pearson","kendall","spearman"))
+```
+
+##### 3. Create scatter plots for each $x, y$ pair of data.
+```{r, message=FALSE, warning=FALSE, fig.width=5, fig.height=3}
+library(ggplot2)
+ggplot(data,aes(x=x1,y=y1))+geom_point(shape=1)+geom_smooth(method=lm)+ggtitle("First x and y pair")
+ggplot(data,aes(x=x2,y=y2))+geom_point(shape=1)+geom_smooth(method=lm)+ggtitle("Second x and y pair")
+ggplot(data,aes(x=x3,y=y3))+geom_point(shape=1)+geom_smooth(method=lm)+ggtitle("Third x and y pair")
+ggplot(data,aes(x=x4,y=y4))+geom_point(shape=1)+geom_smooth(method=lm)+ggtitle("Fourth x and y pair")
+```
+
+##### 4. Now change the symbols on the scatter plots to solid circles and plot them together as a 4 panel graphic
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=3}
+library(Rmisc)
+p1<-ggplot(data,aes(x=x1,y=y1))+geom_point(shape=16)+geom_smooth(method=lm)+ggtitle("First x and y pair")
+p2<-ggplot(data,aes(x=x2,y=y2))+geom_point(shape=16)+geom_smooth(method=lm)+ggtitle("Second x and y pair")
+p3<-ggplot(data,aes(x=x3,y=y3))+geom_point(shape=16)+geom_smooth(method=lm)+ggtitle("Third x and y pair")
+p4<-ggplot(data,aes(x=x4,y=y4))+geom_point(shape=16)+geom_smooth(method=lm)+ggtitle("Fourth x and y pair")
+multiplot(p1,p2,p3,p4, cols = 4)
+```
+
+##### 5. Now fit a linear model to each data set using the `lm()` function.
+```{r, message=FALSE, warning=FALSE}
+xymodel1<-lm(y1~x1,data = data)
+xymodel2<-lm(y2~x2,data = data)
+xymodel3<-lm(y3~x3,data = data)
+xymodel4<-lm(y4~x4,data = data)
+```
+
+##### 6. Now combine the last two tasks.  Create a four panel scatter plot matrix that has both the data points and the regression lines. (hint: the model objects will carry over chunks!)
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+par(mfrow=c(2,2))
+plot(xymodel1)
+plot(xymodel2)
+plot(xymodel3)
+plot(xymodel4)
+```
+
+
+##### 7.  Now compare the model fits for each model object.
+```{r, message=FALSE, warning=FALSE, results="asis"}
+library(stargazer)
+stargazer(xymodel1,xymodel2,xymodel3,xymodel4, type="html", title="Comparing the Statistics of the Models")
+```
+
+
+##### 8. In text, summarize the lesson of Anscombe's Quartet and what it says about the value of data visualization.
+
+The Anscombe's Quartet data shows that while the x and y pairs of the data are statistically almost identical in terms of values of r-squared, adjusted r-squared, Residual Standard Error, etc. when we plot the given pairs out we can see that they are definitely not identical.  
+We can see that the first pair of x and y values forms a simple linear relationship which follows the assumptions of normality and it also shows that the two variables are correlated.  
+The second pair of values, when plotted out, does not show a normal distribution but the correlation of the two variables seems evident.  
+The third pair of variables on the other hand, does show a linear relationship. However, the influence of the single outlier, causes a shift in the regression line.  
+Finally, for the fourth pair of variables, we can see that there is no linear relationship, but due to the presence of the outlier, we can estimate a regression line.  
+The plots of the linear models made also helps us see that the data pairs definitely varies considerably between one another.   
+We can hence conclude that while we can mathematically say that the given pairs of x and y values are identical, they are not visually identical and the visualizations in the form of scatterplots can greatly help us understand the variations in the data and the influence of outliers on the same.
