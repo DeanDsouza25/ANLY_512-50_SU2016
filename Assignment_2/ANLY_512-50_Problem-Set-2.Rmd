@@ -1,0 +1,69 @@
+---
+title: "ANLY 512 - Problem Set 2"
+subtitle: "Visualizing Movie's"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+## Objectives
+
+The objectives of this problem set is to gain experience working with data visualization as a tool for understanding unfamiliar data. To do this I want you to submit four *vis* that reveal something interesting about either the included `movies.csv` dataset.  For each *vis*, include the code you used to create the plot (`echo=TRUE`), and a one paragraph description of what you found interesting.  In most analyses the first plot you try will not be the most informative and you will need to make multiple improvements to get a polished plot. To show this process, for one of your 4 *vis*, provide 3-5 iterations that lead you to the final plot.  
+
+Finally, upon completion name your final output `.html` file as: `YourName_PS2_ANLY580_LTSP2016.html` and upload it to the "Problem Set 2"" assignmenet on Moodle.
+
+
+## My Example
+
+Below is my example for a multi-part question.  I have also included an example of loading the data based on requests in last weeks class.  I will provide the `movie_data.csv` check Moodle.  Add your response in a similar fashion and submit following the directions above.
+
+### Data Import & Cleanup
+```{r, echo=TRUE}
+library(dplyr)  # for easier filtering
+library(ggplot2)
+
+dat <- read.csv("~/Documents/ANLY512-50-2016/data/movie_data.csv")  # import the csv
+
+str(dat)    # Look at the structure of the data frame
+
+# Clean up some variables
+dat$Domestic <- as.numeric(dat$Domestic)   # Convert these columns to numeric
+dat$Worldwide <- as.numeric(dat$Worldwide)
+
+dat2 <- filter(dat, Title.type == "Feature Film")
+```
+
+
+### Multi-step Visualization
+
+Look at the distribution of earnines by release year.
+```{r, echo=TRUE}
+ggplot(dat2, aes(Year, Worldwide)) +
+  geom_bar(stat = "identity")
+```
+
+Lots of empty year earlier on, I will try just domestic earnings.
+```{r, echo=TRUE}
+ggplot(dat2, aes(Year, Domestic)) +
+  geom_bar(stat = "identity")
+```
+
+No similar patterns.  Looks like missing data early in the time series.
+
+```{r, echo=TRUE, fig.width=8.5}
+dat3 <- filter(dat2, Year >= 1990)
+
+ggplot(dat3, aes(factor(Year), Domestic)) +
+  geom_bar(stat = "identity") +
+  ggtitle("Annual Domestic Movie Earnings") +
+  ylab("Domestic Earnings (USD)") +
+  xlab("Year")
+```
+
+### Summary
+
+There are several intersting details about this dataset I have identified.  First there is excessive missing data points early in the time-series.  A focus on data post-1990 is much more interesting.  Second, the data seems to have inconsistent `Year` data because I have found abberrant year designations.  In an anlysis I would have to go back and ensure data is being aggregated to the year.  Finally, and most interestingly domestic movie earnings have been rather inconsistent over the last twenty year.  
+
+
+
