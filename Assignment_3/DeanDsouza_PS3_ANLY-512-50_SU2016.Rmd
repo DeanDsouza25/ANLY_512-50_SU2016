@@ -1,0 +1,16 @@
+---
+title: "Assignment 3"
+author: "Your Name"
+date: "June 15, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Objective
+
+The objective of this assignment is two fold.  First you are required to read and summarize the key aspects of both readings *Cleveland and McGill 1985* and *Heer and Bostock 2010*.  This summary should explore the similarities and differences in both studies approaches and in their findings.  
+
+To support these summaries I want you to create at least two vis for each paper highlighting the comparitive points of each paper.  These vis should use ggplot2 package and highlight the lessons learned concerning graphical perception.  Include text explaining the relevance of each vis to the overall point of the paper to which it is focused.  
