@@ -79,7 +79,7 @@ dat$Title.type[dat$Title.type=="Mini-series"]<-"Mini-Series"
 # Plotting the visualization
 
 gp4<-ggplot(dat, aes(x=Runtime..mins.))
-gp4+geom_bar(na.rm = TRUE)
+gp4+geom_bar(na.rm = TRUE)+xlab("Runtime(mins)")
 
 ```
   
@@ -87,13 +87,13 @@ gp4+geom_bar(na.rm = TRUE)
     We further scale the plot down to get a better look at the distribution.
     
 ```{r}
-gp4+geom_bar(na.rm = TRUE)+scale_x_continuous(limits=c(50,200))
+gp4+geom_bar(na.rm = TRUE)+scale_x_continuous(limits=c(50,200))+xlab("Runtime(mins)")
 ```
   
   While the above plot is useful, we can better summarize the data by using `geom_density()` function:
   
 ```{r}
-gp4+geom_density(na.rm=TRUE)+scale_x_continuous(limits=c(0,200))
+gp4+geom_density(na.rm=TRUE)+scale_x_continuous(limits=c(0,200))+xlab("Runtime(mins)")
 ```
 
 ### Summary
@@ -107,7 +107,7 @@ gp4+geom_density(na.rm=TRUE)+scale_x_continuous(limits=c(0,200))
 ```{r}
 dat.1<-filter(dat, Year>=1970 ,na.rm=TRUE)
 gp3<-ggplot(dat.1, aes(x= Year, y= IMDb.Rating, fill= Title.type))
-gp3+geom_bar(stat="identity", position="stack")
+gp3+geom_bar(stat="identity", position="stack")+xlab("Year")+ylab("Rating on IMDB")
 ```
 
   As we have already seen, most of the cases in the data set are of the "Feature Film" and "Mini-series" type. Due to the composition of the data many of the other types are seen as short bands on the chart.
@@ -118,7 +118,7 @@ gp3+geom_bar(stat="identity", position="stack")
 
 ```{r}
 gp1<-ggplot(dat, aes(x=IMDb.Rating, y=AVG.rating, colour=Title.type))
-gp1+geom_point(na.rm=TRUE)+facet_wrap(~Title.type)
+gp1+geom_point(na.rm=TRUE)+facet_wrap(~Title.type)+xlab("Ratings on IMDB")+ylab("Average Rating")
 ```
   
   Based on the plot we can see that overall it would seem that there is a linear relationship between the IMDB ratings and Average ratings over the various groups. However in the case of "Feature Film" and of "Documentaries", we see a lot of variation.
@@ -137,7 +137,7 @@ dat.2<-filter(dat,!(grepl("Feature Film and Mini-series|Music video|TV Episode|T
 
 # plotting the violin plots by faceting over Title.type
 gp2<-ggplot(dat.2, aes(x= Year , y= AVG.rating , fill= Title.type))
-gp2+geom_violin(na.rm=TRUE)+facet_wrap(~Title.type,drop = TRUE)
+gp2+geom_violin(na.rm=TRUE)+facet_wrap(~Title.type,drop = TRUE)+xlab("Year")+ylab("Average Rating")
 ```
   
   The above plot gives us an idea about the distribution of Average ratings over the years fot the varuious Title.type. 
