@@ -65,5 +65,83 @@ ggplot(dat3, aes(factor(Year), Domestic)) +
 
 There are several intersting details about this dataset I have identified.  First there is excessive missing data points early in the time-series.  A focus on data post-1990 is much more interesting.  Second, the data seems to have inconsistent `Year` data because I have found abberrant year designations.  In an analysis I would have to go back and ensure data is being aggregated to the year.  Finally, and most interestingly domestic movie earnings have been rather inconsistent over the last twenty year.  
 
+## Visualization 1
 
+For the first visualization we look at the Runtime in minutes for the entire data set.
 
+### Multi-step Visualization
+
+```{r}
+# A bit of additional clean up
+
+dat$Title.type[dat$Title.type=="Mini-series"]<-"Mini-Series"
+
+# Plotting the visualization
+
+gp4<-ggplot(dat, aes(x=Runtime..mins.))
+gp4+geom_bar(na.rm = TRUE)
+
+```
+  
+    From the above plot we see that most of the cases in our data set have a runtime between 0 and 500 minutes.  
+    We further scale the plot down to get a better look at the distribution.
+    
+```{r}
+gp4+geom_bar(na.rm = TRUE)+scale_x_continuous(limits=c(50,200))
+```
+  
+  While the above plot is useful, we can better summarize the data by using `geom_density()` function:
+  
+```{r}
+gp4+geom_density(na.rm=TRUE)+scale_x_continuous(limits=c(0,200))
+```
+
+### Summary
+
+  The plot helps us see that the majority of cases in the dataset have a runtime close to 60 minutes. It helps us to understand that most of the cases are short movies and that there are lesser examples of other types such as music videos, mini-series, etc.
+  
+## Visualization 2
+  
+  Here we take a look at the variation of IMDB ratings over the years while grouping based on the Title type.
+  
+```{r}
+dat.1<-filter(dat, Year>=1970 ,na.rm=TRUE)
+gp3<-ggplot(dat.1, aes(x= Year, y= IMDb.Rating, fill= Title.type))
+gp3+geom_bar(stat="identity", position="stack")
+```
+
+  As we have already seen, most of the cases in the data set are of the "Feature Film" and "Mini-series" type. Due to the composition of the data many of the other types are seen as short bands on the chart.
+
+## Visualization 3
+  
+  In the following visualization we try to see if there is a relationship between the IMDB ratings and Average Ratings of the various cases. We also divide this based on the Title.type for a better view of variation across this factor.
+
+```{r}
+gp1<-ggplot(dat, aes(x=IMDb.Rating, y=AVG.rating, colour=Title.type))
+gp1+geom_point(na.rm=TRUE)+facet_wrap(~Title.type)
+```
+  
+  Based on the plot we can see that overall it would seem that there is a linear relationship between the IMDB ratings and Average ratings over the various groups. However in the case of "Feature Film" and of "Documentaries", we see a lot of variation.
+
+## Visualization 4
+  
+  The following visualization takes a look at the variation of Average Ratings over the years for the various groups of Title.type.
+
+```{r}
+#dat$Rotten.Tom.<-as.numeric(dat$Rotten.Tom.)
+
+#  Trying the exclude certain Title.type so as to only view proper violin plots
+dat.2<-filter(dat,!(grepl("Feature Film and Mini-series|Music video|TV Episode|TV Special|NA",Title.type)))
+
+#dat.3<-filter(dat.1, Rotten.Tom.>0,na.rm=TRUE)
+
+# plotting the violin plots by faceting over Title.type
+gp2<-ggplot(dat.2, aes(x= Year , y= AVG.rating , fill= Title.type))
+gp2+geom_violin(na.rm=TRUE)+facet_wrap(~Title.type,drop = TRUE)
+```
+  
+  The above plot gives us an idea about the distribution of Average ratings over the years fot the varuious Title.type. 
+  
+## Summary
+  
+  The above visualizations help us to get a better understanding of the data set and how the various cases are distributed. The ggplot2 package provides a number of useful visualization tools that can help with depicting information better as well and the dplyr package helps to better structure the data for the visualizations. This document can also be found on [GitHub](https://github.com/DeanDsouza25/ANLY_512-50_SU2016/tree/master/Assignment_2)
