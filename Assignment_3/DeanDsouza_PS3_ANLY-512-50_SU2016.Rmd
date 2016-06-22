@@ -29,12 +29,14 @@ To support these summaries I want you to create at least two vis for each paper 
   Next, several graphical methods are compared such as bar charts and dot charts, which the authors suggest to be used only when there is a meaningful baseline, Tukey box plots, which give a better idea about most details succh as mean, standard deviation and whether the data is skewed through the representation of outliers. Other graphical methods include graphing on a log 2 base scale, which is thought to be easier to percieve due to the use of powers of 2 in computing, two-tiered error bars, which convey sample to samle variation and confidence intervals, and lowess smoothed scatterplots which calculates a curve based on robust locally weighted regression or lowess, which helps in providing a smoother regression curve.  
   The paper concludes that the framework provided in it proves to be a good base for formulating graphics for better understanding the data and the constant additions of new tools such as lowess can further help in graphical perception.
   
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE,message=FALSE}
 library(ggplot2)
 par(mfrow=c(1,2))
 g1<-ggplot(mtcars, aes(x=hp))
 g1+geom_histogram(binwidth = 10)
 g1+geom_dotplot(binwidth =10)
+g2<-ggplot(mtcars, aes(x=hp, y=disp))
+g2+geom_point()+geom_smooth()+xlab("Horse Power(HP)")+ylab("Displacement")
 ```
   
 
@@ -50,17 +52,22 @@ g1+geom_dotplot(binwidth =10)
   Further, certain aspects of the Turkers was also noted such as the overlap across studies, the presence of samplers (Turkers who would only complete a few HITs in a category) and streakers (Turkers who would complete the bulk of HITs across categories). Limitations of MTurk such as the limitation of collecting fine-grained timing data was also noted. It was also noted that carrying out experiments through MTurk significantly reduced the cost of carrying out the experiment from $2,190 to $367.77.  
   The paper concludes that while MTurk is definitely a viable option for carrying out experiments, there are a number of limitations that need to be addressed by the designers of the experiment through the inclusion of qualification tests and clear instructions. Additonally there are a number of variables that cannot be controlled such as the users Operating System, browser, external factors such as distractions or connection timeouts (which effects timing data),etc. However, this platform gives way to cost reduction and access to a wider population. Additionally, more data can be obtatined by experimenters if they were to embedd their own custom tests as a frame in  the MTurk interface.
   
-```{r, echo=FALSE}
-g2<-ggplot(mtcars, aes(x=factor(cyl), y=hp))
-g2+geom_boxplot()+xlab()
+```{r, echo=FALSE, warning=FALSE,message=FALSE}
+g3<-ggplot(mtcars, aes(x=factor(cyl), y=disp, fill=factor(gear)))
+g3+geom_boxplot()+xlab("Cylinders")+ylab("Displacement")
+g4<-ggplot(mtcars, aes(x=cyl,y=disp))
+g4+geom_point()+geom_quantile(method="rqss")+xlab("Cylinders")+ylab("Displacement")
 ``` 
 
 ## Comparing the two papers
   
   There are a number of comparisons that can be made between the two papers:
-  1. Paper 1 (Cleveland and McGill) performed experiments that were limited to only a few dimensions while Paper 2 (Heer and Bostock) performed additional experiments.
-  2. Paper 1 was focused on subjects in a lab set up which had more control on most variables while paper 2 focused on subjects with more diversity through the use of crowdsourcing through MTurk which resulted in a number of uncontrollable variables.
-  3. While paper 2 replicated most of the findings of paper 1, there was a discrepancy in comparing the poistion-angle experiment to the position-length experiment due to difference in formats.
-  4. Paper 2 did additional work on color hue and plot density, among others, in order to arrive at new insights on graphical perception.
-  5. Paper 1 listed the newer and better methods to produce graphics while paper 2 verfied the viability of these methods and tried to find possible improvements.
-  6. Paper 2 was more focused on the effect that crowd sourcing could have on understanding graphical perception while paper 1 tried to establish a base framework on which to build better graphics.
+  1. Paper 1 (Cleveland and McGill) performed experiments that were limited to only a few dimensions while Paper 2 (Heer and Bostock) performed additional experiments.  
+  2. Paper 1 was focused on subjects in a lab set up which had more control on most variables while paper 2 focused on subjects with more diversity through the use of crowdsourcing through MTurk which resulted in a number of uncontrollable variables.  
+  3. While paper 2 replicated most of the findings of paper 1, there was a discrepancy in comparing the poistion-angle experiment to the position-length experiment due to difference in formats.  
+  4. Paper 2 did additional work on color hue and plot density, among others, in order to arrive at new insights on graphical perception.  
+  5. Paper 1 listed the newer and better methods to produce graphics while paper 2 verfied the viability of these methods and tried to find possible improvements. 
+  6. Paper 2 was more focused on the effect that crowd sourcing could have on understanding graphical perception while paper 1 tried to establish a base framework on which to build better graphics. 
+  
+  
+Github link:  <https://github.com/DeanDsouza25/ANLY_512-50_SU2016/tree/master/Assignment_3>
