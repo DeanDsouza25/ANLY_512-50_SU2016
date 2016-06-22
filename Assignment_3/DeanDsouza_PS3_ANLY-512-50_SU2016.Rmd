@@ -1,7 +1,7 @@
 ---
 title: "Assignment 3"
-author: "Your Name"
-date: "June 15, 2016"
+author: "Dean D'souza"
+date: "`r Sys.Date()`"
 output: html_document
 ---
 
@@ -14,3 +14,53 @@ knitr::opts_chunk$set(echo = TRUE)
 The objective of this assignment is two fold.  First you are required to read and summarize the key aspects of both readings *Cleveland and McGill 1985* and *Heer and Bostock 2010*.  This summary should explore the similarities and differences in both studies approaches and in their findings.  
 
 To support these summaries I want you to create at least two vis for each paper highlighting the comparitive points of each paper.  These vis should use ggplot2 package and highlight the lessons learned concerning graphical perception.  Include text explaining the relevance of each vis to the overall point of the paper to which it is focused.  
+
+## Summary
+  
+  We continue by summarizing each paper individually before comparing the difference in findings:
+
+#### Cleveland and McGill 1985
+  
+  The paper describes the various graphical methods that came about during the revolution of computer graphics and also provides some theoretical and experimental information about human graphical perception and it's impact on how to display data.  
+  Firstly, they identify the graphical-perception tasks that are used to extract numerical information from graphs in theory. This includes: color hue, angle, area, density, length, position (along a common scale, along identical but not alligned scales), slope and volume. Next, they take a look at how the angle of a line can lead to misconceptions about the slope of the line as indicated by when two line segments being close to the vertical or horizontal leads to a poor judegment about the relative slope.  
+  They then began experimentations in which subjects studied some aspect of two graphic objects and judged the percentage of the smaller compared to the larger object. They also observed the error in judgement which was the difference between the judged and true percentages for three experiments of position, length, angle, slope and area.
+  They then ordered these tasks based on the error in judgement but also stated that due to lack of control over the experimentation, the ordering should be thought of as tentative. For the most part position and length estimations were found to be more accurate followed by angle and slope and finally area. Also, judgement of position along common scale and those along identical non-aligned scales seemed to show little difference although this could be due to a larger fraction of difficult judgements in the former case.  
+  Next, a framework was formulated which orders the perceptual tasks such that when one uses it one should select perceptual tasks of higher rank. However, there may be cases where the visual system may not detect the quantitive information present in the graphic effectively due to various reasons, which would render the framework irrelevant.  
+  Next, several graphical methods are compared such as bar charts and dot charts, which the authors suggest to be used only when there is a meaningful baseline, Tukey box plots, which give a better idea about most details succh as mean, standard deviation and whether the data is skewed through the representation of outliers. Other graphical methods include graphing on a log 2 base scale, which is thought to be easier to percieve due to the use of powers of 2 in computing, two-tiered error bars, which convey sample to samle variation and confidence intervals, and lowess smoothed scatterplots which calculates a curve based on robust locally weighted regression or lowess, which helps in providing a smoother regression curve.  
+  The paper concludes that the framework provided in it proves to be a good base for formulating graphics for better understanding the data and the constant additions of new tools such as lowess can further help in graphical perception.
+  
+```{r, echo=FALSE}
+library(ggplot2)
+par(mfrow=c(1,2))
+g1<-ggplot(mtcars, aes(x=hp))
+g1+geom_histogram(binwidth = 10)
+g1+geom_dotplot(binwidth =10)
+```
+  
+
+#### Heer and Bostock 2010
+  
+  The paper describes the importance of understanding graphical perception in order to create effective visualizations and also takes a look at the viability of Amazon's Mechanical Turk as a platform for carrying out graphical perception experiments. It also discusses about some of the newer experiments carried out for the same and provides suggestions for the proper use of Mechanical Turk(MTurk).  
+  It also discusses about previous experiments which looked at the interactions between visual variables such as viewers decoding separable dimensions like position and shape independently while integral dimensions such as color hue and saturation are thought to be correlated. Other factors such as background luminasence, plotting density, aspect ratio, etc. also has an effect on graphical perception.  
+  It describes how on MTurk jobs are posted as Human Intelligence Tasks(HITs) and how the reward for completing each of these HITs can also affect the usability of the data. Generally, higher rewards leads to more data (i.e. more Turkers completing the tasks), however, this does not guarantee that all of the data is usable and other contributing factors have an affect on deciding how much of the data is actually usable for the experiment.  
+  The first experiment's first part which was carried out was to replicate the work of Cleveland and McGill on MTurk. The method involved the use of seven judgement types, such that 1-3 used position encoding along a common scale while 4 and 5 used a length encoding, type 6 used angle in the form of pie charts, and type 7 used circular area through bubble charts. Ten charts were created for each type with dimensions of 380x380 pixels, resulting in a total of 70 trials. This experiment resulted in similar conclusions as Cleveland and McGill's experiments but due to a difference in task format it was difficult to compare the postion-angle experiment to the position-length experiment.  
+  The second part of the first experiment used Cleveland and McGill's proportional judgement task and the log absolute error measure, so as to allow comparison across the two studies. However, the authors sought to compare the circular area judgement task with rectangular area judgements through cartograms and treemaps. This experiment resulted in new insights such as the benefit of the inability of squarified treemap algorithms to perfectly optimize rectangles to 1:1 ratios. 
+  The second experiment replicated the alpha contrast experiment by Stone and Bartram in which the Turkers (users or subjects) were to adjust the transparency of scatterplot gridlines across variations of background darkness and plot density. This was didvided into two tasks, one involved adjusting the grid lines to be as light as possible while still being usable for perception and the second increased the strength of the grid lines before it becomes more of a fence in front of the image. The experiment was consistent with previous findings, with the exception of a few values which were attributed to the Turkers being Web users.  
+  The final experiment was on visualization size through chart size and grid line spacing. This experiment resulted in verifying the authors hypothesis that accuracy increase with the increse in plot size, with little benefit of increasing plot size over 80 pixels. Additionaly, adding gridlines improved user accuracy but depended also on plot density with greater densities requiring less spacing.  
+  Further, certain aspects of the Turkers was also noted such as the overlap across studies, the presence of samplers (Turkers who would only complete a few HITs in a category) and streakers (Turkers who would complete the bulk of HITs across categories). Limitations of MTurk such as the limitation of collecting fine-grained timing data was also noted. It was also noted that carrying out experiments through MTurk significantly reduced the cost of carrying out the experiment from $2,190 to $367.77.  
+  The paper concludes that while MTurk is definitely a viable option for carrying out experiments, there are a number of limitations that need to be addressed by the designers of the experiment through the inclusion of qualification tests and clear instructions. Additonally there are a number of variables that cannot be controlled such as the users Operating System, browser, external factors such as distractions or connection timeouts (which effects timing data),etc. However, this platform gives way to cost reduction and access to a wider population. Additionally, more data can be obtatined by experimenters if they were to embedd their own custom tests as a frame in  the MTurk interface.
+  
+```{r, echo=FALSE}
+g2<-ggplot(mtcars, aes(x=factor(cyl), y=hp))
+g2+geom_boxplot()+xlab()
+``` 
+
+## Comparing the two papers
+  
+  There are a number of comparisons that can be made between the two papers:
+  1. Paper 1 (Cleveland and McGill) performed experiments that were limited to only a few dimensions while Paper 2 (Heer and Bostock) performed additional experiments.
+  2. Paper 1 was focused on subjects in a lab set up which had more control on most variables while paper 2 focused on subjects with more diversity through the use of crowdsourcing through MTurk which resulted in a number of uncontrollable variables.
+  3. While paper 2 replicated most of the findings of paper 1, there was a discrepancy in comparing the poistion-angle experiment to the position-length experiment due to difference in formats.
+  4. Paper 2 did additional work on color hue and plot density, among others, in order to arrive at new insights on graphical perception.
+  5. Paper 1 listed the newer and better methods to produce graphics while paper 2 verfied the viability of these methods and tried to find possible improvements.
+  6. Paper 2 was more focused on the effect that crowd sourcing could have on understanding graphical perception while paper 1 tried to establish a base framework on which to build better graphics.
