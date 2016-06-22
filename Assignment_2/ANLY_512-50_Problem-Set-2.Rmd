@@ -143,9 +143,5 @@ gp2+geom_violin(na.rm=TRUE)+facet_wrap(~Title.type,drop = TRUE)+xlab("Year")+yla
   The above plot gives us an idea about the distribution of Average ratings over the years fot the varuious Title.type. 
   
 ## Summary
-  
-<<<<<<< HEAD
+
   The above visualizations help us to get a better understanding of the data set and how the various cases are distributed. The ggplot2 package provides a number of useful visualization tools that can help with depicting information better as well and the dplyr package helps to better structure the data for the visualizations. This document can also be found on [GitHub](https://github.com/DeanDsouza25/ANLY_512-50_SU2016/tree/master/Assignment_2)
-=======
-  The above visualizations help us to get a better understanding of the data set and how the various cases are distributed. The ggplot2 package provides a number of useful visualization tools that can help with depicting information better as well and the dplyr package helps to better structure the data for the visualizations. This document can also be found on [GitHub](https://github.com/DeanDsouza25/ANLY_510-50_SU2016/tree/master/Assignment_2)
->>>>>>> origin/master
