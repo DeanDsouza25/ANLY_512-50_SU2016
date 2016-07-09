@@ -1,7 +1,7 @@
 ---
 title: "Assignment 4"
 subtitle: "Exploratory Data Analysis"
-author: "Your Name"
+author: "Dean D'souza"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -28,12 +28,111 @@ You analysis should be completed within an **Rmarkdown** document.  The assignme
 The final document should be converted using the `knitr` package to an `.html` file and submitted via Moodle for evaluation.  Remember to properly name your file as: `YourName_ANLY512-50_SU2016.html`.
 
 ## Your EDA
-
+  
+  For my EDA I chose the data set "iris" (Edgar Anderson's Iris Data)which contatins the following covariates:  
+  + Sepal.Length (numeric)
+  + Sepal.Width (numeric)
+  + Petal.Length (numeric)
+  + Petal.Width (numeric)
+  + Species (categorical)
+  
 ```{r}
-# Your import statement
+library(datasets)
+library(ggplot2)
+data("iris")
+head(iris)
 ```
 
 
-```{r}
-# Your first EDA step
+```{r,warning=FALSE,message=FALSE}
+# Checking for outliers
+par(mfrow=c(1,4))
+boxplot(iris$Sepal.Length, main="Sepal Length")
+boxplot(iris$Sepal.Width, main="Sepal Width")
+boxplot(iris$Petal.Length, main="Petal Length")
+boxplot(iris$Petal.Width, main="Petal Length")
+
+dotchart(iris$Sepal.Length, main="Sepal Length")
+dotchart(iris$Sepal.Width, main="Sepal Width")
+dotchart(iris$Petal.Length, main="Petal Length")
+dotchart(iris$Petal.Width, main="Petal Length")
 ```
+  
+  Here we can see that the sepal width variable has a few outliers on the higher end and an outlier on the lower end.We can also see through the dotcharts that there is a gap between values.  We take a closer look at seapl width over the various levels of the categorical variable Species.
+  
+```{r,warning=FALSE,message=FALSE}
+p1<-ggplot(iris, aes(x=Species, y=Sepal.Width))+geom_boxplot(outlier.colour = "green", outlier.size = 3)+ylab("Sepal Width")+ggtitle("Boxplot of Sepal width across Species")
+p1
+```
+  
+  The above plot shows that the outliers are mainly for the species of setosa and virginica. These outliers would definitely have an influence on the response variable (in this case sepal width).  
+  
+```{r,warning=FALSE,message=FALSE}
+# Checking for homogenity of variance
+sw.lm<-lm(Sepal.Width~Sepal.Length+Petal.Length+Petal.Width+Species, data=iris)
+sw.res<-resid(sw.lm)
+par(mfrow=c(1,1))
+boxplot(sw.res, main="Plotting the residuals in the form of a boxplot")
+
+p2<-ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width, fill=Species))+geom_boxplot(outlier.colour = "green", outlier.size = 3)+ylab("Sepal Width")+xlab("Sepal Length")+facet_wrap(~Species, drop = TRUE)
+p2
+
+p3<-ggplot(iris, aes(x=Petal.Length, y=Sepal.Width, fill=Species))+geom_boxplot(outlier.colour = "green", outlier.size = 3)+ylab("Sepal Width")+xlab("Petal Length")+facet_wrap(~Species, drop = TRUE)
+p3
+
+
+p4<-ggplot(iris, aes(x=Petal.Width, y=Sepal.Width, fill=Species))+geom_boxplot(outlier.colour = "green", outlier.size = 3)+ylab("Sepal Width")+xlab("Petal Width")+facet_wrap(~Species, drop = TRUE)
+p4
+```
+  
+  The above boxplot shows us that there are outliers in terms of residuals on the negative end, which could indicate higher variation. Additionally the faceted boxplots shows us the variation of Sepal Width with the covariates across species. For the most part we can see that variance differs only slightly and is simillar among species.
+  
+```{r,message=FALSE,warning=FALSE}
+# Checking for normal distribution of data
+par(mfrow=c(2,2))
+hist(iris$Sepal.Length, main="Histogram of Sepal Length",xlab = "Sepal Length")
+hist(iris$Sepal.Width, main="Histogram of Sepal Width",xlab = "Sepal Width")
+hist(iris$Petal.Length, main="Histogram of Petal Length",xlab = "Petal Length")
+hist(iris$Petal.Width, main="Histogram of Petal Width", xlab = "Petal Width")
+```
+  
+  The above histograms helps us see that while sepal width is normally distributed, and sepal length shows a somewhat normal distribution (with a slight skew), Petal Length and Petal width are clearly not normally distributed and  may require the data to be tansformed. We also observe these in the form of frequency plots as follows:
+  
+```{r,warning=FALSE,message=FALSE}
+ggplot(iris, aes(x=Sepal.Length, colour = Species))+geom_freqpoly()+xlab("Sepal Length")
+ggplot(iris, aes(x=Sepal.Width, colour = Species))+geom_freqpoly()+xlab("Sepal Width")
+ggplot(iris, aes(x=Petal.Length, colour = Species))+geom_freqpoly()+xlab("Petal Length")
+ggplot(iris, aes(x=Petal.Width, colour = Species))+geom_freqpoly()+xlab("Petal Width")
+```
+  
+```{r,warning=FALSE,message=FALSE}
+# Checking for collinearity among covariates and relationship between response and explanatory variables:
+par(mfrow=c(2,3))
+
+plot(iris$Sepal.Length,iris$Sepal.Width, xlab = "Sepal Length",ylab = "Sepal Width", main = "Scatterplot of Sepal Length vs. Sepal Width")
+abline(lm(iris$Sepal.Length~iris$Sepal.Width), col="red")
+
+plot(iris$Petal.Length,iris$Sepal.Width, xlab = "Petal Length",ylab = "Sepal Width", main = "Scatterplot of Petal Length vs. Sepal Width")
+abline(lm(iris$Petal.Length~iris$Sepal.Width), col="red")
+
+plot(iris$Petal.Width,iris$Sepal.Width, xlab = "Petal Width",ylab = "Sepal Width", main = "Scatterplot of Petal Width vs. Sepal Width")
+abline(lm(iris$Petal.Width~iris$Sepal.Width), col="red")
+
+plot(iris$Petal.Length,iris$Sepal.Length, xlab = "Petal Length",ylab = "Sepal Length", main = "Scatterplot of Petal Length vs. Sepal Length")
+abline(lm(iris$Petal.Length~iris$Sepal.Length), col="red")
+
+plot(iris$Petal.Width,iris$Sepal.Length, xlab = "Petal Width",ylab = "Sepal Length", main = "Scatterplot of Petal Width vs. Sepal Length")
+abline(lm(iris$Petal.Width~iris$Sepal.Length), col="red")
+
+plot(iris$Petal.Length,iris$Petal.Width, xlab = "Petal Length",ylab = "Petal Width", main = "Scatterplot of Petal Length vs. Petal Width")
+abline(lm(iris$Petal.Width~iris$Petal.Length), col="red")
+
+par(mfrow=c(1,1))
+library(corrgram)
+corrgram(iris, order=TRUE, lower.panel=panel.shade, upper.panel=panel.pie, text.panel=panel.txt, main="Iris Data Correlation Plot")
+```
+  
+  From the above set of scatterplots we can see that for most of the parirings there is no clear relationship between covariates and attempts at plotting regression lines (in red) can be considered successful in the case of petal length and petal width which may indicate a relationship between the two.  
+  For the most part we can consider the observations of the Sepal Width to be independent, however as seen from the scatterplots above, we may need to consider the interactions between Petal Width and Petal Length.
+  
+Note: All files can be found on [GitHub](https://github.com/DeanDsouza25/ANLY_512-50_SU2016/tree/master/Assignment_4)
