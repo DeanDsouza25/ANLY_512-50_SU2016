@@ -70,7 +70,7 @@ About
 ### Metadata
 
 ```{r,echo=FALSE,warning=FALSE,message=FALSE, results='asis'}
-kable(disc, col.names = c("#","Variable Name","Description" ))
+kable(disc, col.names = c("","Variable Name","Description" ))
 ```
 
 #### [Github Link](https://github.com/DeanDsouza25/ANLY_512-50_SU2016/tree/master/Assignment_5)
