@@ -4,7 +4,7 @@ author: "Dean D'souza"
 Date: "`r Sys.Date()`"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
+    orientation: rows
     vertical_layout: fill
 ---
 
@@ -12,32 +12,65 @@ output:
 library(flexdashboard)
 library(knitr)
 library(ggplot2)
-data("USArrests")
-dat<-USArrests
-remove(USArrests)
+data(infert)
+head(infert)
+dat<-infert
+remove(infert)
+disc<-data.frame(c(1:8),c("Education","Age","Parity", "Number of prior Abortions","Case Status", "Number of Prior Spontaneous Abortions", "Matched Set Number", "Stratum Number"),c("0 = 0-5 years,1 = 6-11 years,2 = 12+ years", "age in years of case","count", "0 = 0,1 = 1,2=2 or more","1 = case,0 = control","0 = 0,1 = 1,2 = 2 or more","1-83","1-63"))
 ```
 
-Column {data-width=650}
+Dashboard
+=======================================================================
+
+Sidebar {.sidebar}
 -----------------------------------------------------------------------
 
-### Chart A
+### Infert Data Analysis  
 
-```{r}
+  This dashboard takes a look at the `infert` data set that is present in R.
 
-```
-
-Column {data-width=350}
+Row {data-height=650}
 -----------------------------------------------------------------------
 
-### Chart B
+### Age vs. Stratum  
 
-```{r}
-
+```{r,warning=FALSE,message=FALSE}
+p1<-ggplot(dat, aes(x=age, y=stratum, color=education))
+p1+geom_point()+xlab("Age")+ylab("Stratum of the case")
 ```
 
-### Chart C
 
-```{r}
+### Distibution of cases across Age by Education
 
+```{r,warning=FALSE,message=FALSE}
+p2<-ggplot(dat, aes(x=age, fill=education))
+p2+geom_bar()+xlab("Age")+ylab(NULL)
 ```
 
+Row{.tabset .tabset-fade}
+-----------------------------------------------------------------------
+
+### Induced
+
+```{r,warning=FALSE,message=FALSE}
+p3<-ggplot(dat, aes(age))
+p3+geom_bar(aes(fill=factor(induced)), position = "dodge",width=.6)+guides(fill=guide_legend(title="Induced"))+xlab("Age")+ylab(NULL)
+```
+
+### Spontaneous
+
+```{r,warning=FALSE,message=FALSE}
+p3<-ggplot(dat, aes(age))
+p3+geom_bar(aes(fill=factor(spontaneous)), position = "dodge")+guides(fill=guide_legend(title="Spontaneous"))+xlab("Age")+ylab(NULL)
+```
+
+About
+=======================================================================
+
+### Metadata
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE, results='asis'}
+kable(disc, col.names = c("#","Variable Name","Description" ))
+```
+
+#### [Github Link](https://github.com/DeanDsouza25/ANLY_512-50_SU2016/tree/master/Assignment_5)
