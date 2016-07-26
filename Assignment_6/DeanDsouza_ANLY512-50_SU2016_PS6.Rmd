@@ -1,0 +1,16 @@
+---
+title: "Problem Set 6"
+author: "Dean D'souza"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Interactive Data Visualization
+
+Produce a series of *interactive data visualizations*  You can use any dataset you wish.  The `html_document` should contain a minimum of 5 data visualizations.  The `.html` document must be uploaded to the Moodle and saved as: `YourName_ANLY512-50_SU2016.html`.
+
+## Your Code Below Here
