@@ -1,0 +1,136 @@
+---
+title: "Problem Set 6"
+author: "Dean D'souza"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Loading required Libraries
+library(ggplot2)
+library(knitr)
+library(plotly)
+library(rbokeh)
+
+# Setting seed for reproducible research (Not necessary in this case)
+set.seed(59697989)
+
+# Examining the swiss dataset
+head(swiss)
+
+# Assigning to dat for ease of use (not necessary)
+dat<-swiss
+
+# Removing swiss from memory as it is not in use
+remove(swiss)
+```
+
+## Interactive Data Visualization
+
+Produce a series of *interactive data visualizations*  You can use any dataset you wish.  The `html_document` should contain a minimum of 5 data visualizations.  The `.html` document must be uploaded to the Moodle and saved as: `YourName_ANLY512-50_SU2016.html`.
+
+## Your Code Below Here
+  
+  For this assignment I chose the `swiss` data set which comes with base R. Details about the data set are as follows:  
+  
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+# Following variable is made to display descriptions of variables in Swiss data set  
+desc<-data.frame(c(1:6),c("Fertility","Agriculture","Examination","Education","	 Catholic","Infant.Mortality"),c("common standardized fertility measure","% of males involved in agriculture as occupation","% draftees receiving highest mark on army examination","% education beyond primary school for draftees","% 'catholic' (as opposed to 'protestant')","live births who live less than 1 year."))
+
+# Plotting the table of descriptions 
+kable(desc,format = "html", caption="Swiss data set Variables Description", col.names = c("Index", "Variable Name", "Description"), align = 'l')
+```  
+  
+    
+    We now begin to plot the Interactive graphics as follows:
+  
+### Plot 1  
+  
+  We construct the first plot using the `ploy_ly()` function, here we compare the precentage of the male population involved in agriculture with the % of draftees who scored highest marks in the army examination. As a means of showing the how the color and size parameters would be used, we use the covariate `Catholic` to distinguish these points in color and size.
+
+```{r,warning=FALSE,message=FALSE, fig.align='center',fig.height=5, fig.width=7}
+# Plotting using the plot_ly function 
+plot_ly(dat, x=Agriculture, y=Examination, text=paste("Area: ", row.names(dat)), mode="markers", color= Catholic, size= Catholic)
+```  
+
+### Plot 2  
+  
+  In order to plot the following we add a new variable called `Ed.Rating` which categorizes the data based on the value of the `Education` covariate.  
+  
+```{r,warning=FALSE,message=FALSE, fig.align='center',fig.height=5, fig.width=7}
+# Preparing the data 
+Ed.Rating<-c(1:nrow(dat))
+for(i in 1:nrow(dat)){
+  if(dat[i,]$Education<=10){
+    Ed.Rating[i]<-"Low"
+  } else {
+    if(dat[i,]$Education<=20){
+      Ed.Rating[i]<-"Med"
+    } else {
+      Ed.Rating[i]<-"High"
+    }
+  }
+}
+dat1<-cbind(dat,Ed.Rating)
+
+# Formulating the plot
+p2<-ggplot(data = dat1, aes(x= Fertility, y=Infant.Mortality))+ylab("Infant Mortality")+geom_point(aes(text=paste("Area :", row.names(dat1)), size=3))+geom_smooth(aes(colour= Ed.Rating, fill=Ed.Rating))+facet_wrap(~Ed.Rating)
+(gg<-ggplotly(p2))
+```  
+
+### Plot 3  
+  
+  We now begin to examine the Percentage of draftees who scored highest marks on army examinations. We also separate them based on the Education Rating from the previos plot.
+
+```{r,warning=FALSE,message=FALSE, fig.align='center',fig.height=5, fig.width=7}
+plot_ly(dat1, x=Examination, color=Ed.Rating, type="box")
+```  
+
+### Plot 4  
+  
+  In the following plot, we attempt to see the percentage of draftees who got highest marks on army examiinations against the percentage of the male poulation involved in agriculture. We also try to separate them based on the percentage of population who are catholic and the Education rating we formed previously.(Using rbokeh)  
+  
+```{r,warning=FALSE,message=FALSE, fig.align='center',fig.height=5, fig.width=7}
+p4<-figure() %>% ly_points(Education,Examination, data=dat1, color=Catholic, glyph=Ed.Rating, hover= list(text=paste("Area :", row.names(dat1)),Examination,Agriculture,Catholic,Ed.Rating))
+p4
+```  
+
+### Plot 5  
+  
+  For the following plot we build a linear model and plot it out as follows:  
+  
+```{r,warning=FALSE,message=FALSE, fig.align='center',fig.height=5, fig.width=7}
+# Building linear model
+dat_lm<-lm(Agriculture~Fertility, data=dat1)
+
+# PLotting Lowess and Linear Regression lines
+p5<- figure(width = 700, height = 700) %>% ly_points(dat1,color=dat1$Ed.Rating, hover=dat1) %>% ly_lines(lowess(dat1), legend="Lowess") %>% ly_abline(dat_lm, type=3, legend="lm")
+p5
+```  
+  
+### Miscellaneous plots  
+  
+  Following are a few bargraphs and boxplots:
+  
+```{r,warning=FALSE,message=FALSE,fig.align='center',fig.height=5,fig.width=7}
+plot_ly(dat1, x=Fertility, type= "histogram")
+plot_ly(dat1, x=Infant.Mortality, type= "histogram")
+
+#Following is required to remove y labels from the next plot
+ax <- list(
+  title = "",
+  zeroline = FALSE,
+  showline = FALSE,
+  showticklabels = FALSE,
+  showgrid = FALSE
+)
+
+plot_ly(dat1, x=Fertility, y=row.names(dat1),type="bar",color=Ed.Rating) %>% layout(yaxis=ax)
+
+plot_ly(dat1, x=Education, y=row.names(dat1),type="bar",color=Ed.Rating) %>% layout(yaxis=ax)
+
+```
+
+__Note__: All files can be found on [GitHub](https://github.com/DeanDsouza25/ANLY_512-50_SU2016/tree/master/Assignment_6)
