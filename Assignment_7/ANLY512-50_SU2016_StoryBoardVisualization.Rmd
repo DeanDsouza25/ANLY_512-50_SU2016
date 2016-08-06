@@ -1,0 +1,55 @@
+---
+title: "Story Board Visualization"
+output: 
+  flexdashboard::flex_dashboard:
+    storyboard: true
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(ggplot2)
+library(plotly)
+```
+
+Analysis {.storyboard}
+=========================================
+
+### Frame 1
+
+```{r}
+p1<-ggplot(data = cdeaths, aes(x=Death.Date, y=Age, colour=Ethnicity))+geom_boxplot()
+p1
+```
+
+### Frame 2
+
+```{r}
+```
+
+### Frame 3
+
+```{r}
+```  
+
+### Frame 4
+
+```{r}
+```  
+
+### Frame 5
+
+```{r}
+```  
+
+### Frame 6
+
+```{r}
+```
+
+Details
+=========================================
+
+Column
+-----------------------------------------
