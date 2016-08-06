@@ -19,18 +19,29 @@ Analysis {.storyboard}
 ### Frame 1
 
 ```{r}
-p1<-ggplot(data = cdeaths, aes(x=Death.Date, y=Age, colour=Ethnicity))+geom_boxplot()
+# Settin up data
+cd <- read_csv("C:/Users/demon/Desktop/custodial-deaths.csv")
+cd1<-cd[,1:12]
+remove(cd)
+newnames<-c("Department.Name", "Custody.Type", "Custody.Type.Facility","First.Name","Middle.Name","Last.Name","Ethnicity","Sex","Age","Death.Date","Manner.Death","Charges.Status")
+colnames(cd1)<-newnames
+
+# Plotting 
+p1<-ggplot(data = cd1, aes(x=Custody.Type, y=Age, colour=Ethnicity))+geom_boxplot()+coord_flip()
 p1
 ```
 
 ### Frame 2
 
 ```{r}
+p2<-ggplot(data=cd1, aes(x=Sex,fill=Charges.Status))+geom_bar(width=1)+coord_polar(theta="y")
+p2
 ```
 
 ### Frame 3
 
 ```{r}
+p3<-ggplot()
 ```  
 
 ### Frame 4
