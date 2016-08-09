@@ -1,10 +1,13 @@
 ---
 title: "Story Board Visualization"
+author: "Ashish Syal, Dean Dsouza and Soujanya Bulagannawar"
+date: "`r Sys.Date()`"
 output: 
   flexdashboard::flex_dashboard:
     storyboard: true
     orientation: columns
     vertical_layout: fill
+    theme: united
 ---
 
 ```{r setup, include=FALSE}
@@ -16,48 +19,100 @@ library(plotly)
 Analysis {.storyboard}
 =========================================
 
-### Frame 1
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+# Loading required Libraries
+library(readr)
+library(ggplot2)
+library(plotly)
 
-```{r}
-# Settin up data
-cd <- read_csv("C:/Users/demon/Desktop/custodial-deaths.csv")
-cd1<-cd[,1:12]
-remove(cd)
+#Setting up the data object due to issues regarding parsing of .csv file
+cdt <- read_csv("C:/Users/demon/Desktop/custodial-deaths.csv")
+cd<-cdt[,1:12]
+
 newnames<-c("Department.Name", "Custody.Type", "Custody.Type.Facility","First.Name","Middle.Name","Last.Name","Ethnicity","Sex","Age","Death.Date","Manner.Death","Charges.Status")
-colnames(cd1)<-newnames
+colnames(cd)<-newnames
 
-# Plotting 
-p1<-ggplot(data = cd1, aes(x=Custody.Type, y=Age, colour=Ethnicity))+geom_boxplot()+coord_flip()
+# Adding aditional columns
+cd$AgeGroup<-""
+cd$AgeGroup<-ifelse(cd$Age<=0,NA,ifelse(cd$Age<=25,"1-25",ifelse(cd$Age<=50,"26-50",ifelse(cd$Age<=75,"51-75",ifelse(cd$Age<=100,"76-100",ifelse(cd$Age<=125,"101-125","Over 125"))))))
+
+# Modifying to work with dates effectively
+date<-strptime(cd$Death.Date, "%m/%d/%Y %H:%M")
+cd$Death.Date<-date
+```
+
+### The dataset contains a larger proportion of male inmates as compared to female inmates  
+  
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+p1<-ggplot(data=cd, aes(x=Sex,fill=AgeGroup))+geom_bar(width=1)+coord_polar(theta="y")+guides(fill= guide_legend(title = "Age Group"))
 p1
-```
+```  
+  
+***  
+  
+  Another observation we can make is that the male inmate distribution represents a wider range of age groups as compared to the female inmates which have a higher concentration in the 26-50 age range, followed by 51-75.  
+  
+### The Age at the time of death across ethnicities shows considerable variation, especially for the male population  
 
-### Frame 2
-
-```{r}
-p2<-ggplot(data=cd1, aes(x=Sex,fill=Charges.Status))+geom_bar(width=1)+coord_polar(theta="y")
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+p2<-ggplot(data = cd, aes(x=Sex, y=Age, colour=Ethnicity, title("Age wise distribution"))) + geom_boxplot() + coord_flip() +scale_color_brewer(palette = "Paired")
 p2
-```
-
-### Frame 3
-
-```{r}
-p3<-ggplot()
 ```  
 
-### Frame 4
+***  
+  
+  Another detail we can notice is that there are a few cases in which the age at the time of death was not recorded, specifically in the cases of `African-American`, `Anglo` and `Hispanic`. There is also one case in the category of unknown ethnicity.  
+  Another interesting observation that sticks out is that the inmates of `Native Hawaiin/Pacific Islander` ethnicity shows a small group of 26-50 year olds dying over the years.
+  We can also observe that in the case of female inmates, the only ethnicities observed were `African-American`, `Anglo` and `Hispanic`.  
+  
+### On a per year basis, however,the number of deaths by ethnicity shows that the majority of deaths happen to inmates of `Anglo` ethnicity   
 
-```{r}
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+p3<-ggplot(data = cd, aes(x=factor(format(Death.Date, '%Y')) ,fill=Ethnicity))+geom_bar(position = "dodge")+scale_fill_brewer(palette = "Paired")+xlab("Year")
+p3
 ```  
 
-### Frame 5
+***  
+  
+  We can also observe that second most number of deaths was initially of the `African-American` ethnicity, but it saw a gradual drop in 2011. After 2011, the second most number of deaths varies mainly between `African-American` and `Hispanic` ethnicities.  
+  We can also see that 2015 saw the most number of deaths of `Anglo` ethnicity.  
+  
+### Many inmates of the dataset primarily passed away at a penitentiary, while muncipal jails saw the least number of deaths  
 
-```{r}
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+p4<-ggplot(data= cd, aes(x=factor(format(Death.Date, '%Y')),fill=Custody.Type))+geom_bar(position="dodge")+scale_fill_brewer(palette = "Paired")+guides(fill= guide_legend(title = "Custody Type"))+xlab("Year")
+p4
 ```  
 
-### Frame 6
+***  
+  
+  It's interesting to note that a number of deaths have taken place in police custody as compared to Muncipal Jails and County Jails. We would generally expect most deaths to happen in penitentiaries due to a number of prisoners serving life sentences or being executed there.  
+  The most interesting fact is that in recent years the number of deaths in Police Custody have increased quite a bit.  
+  
+### A larger portion of the number of deaths in police custody have been termed as `Justifiable Homicide` 
 
-```{r}
-```
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+# Subsetting data for better understanding
+cdt1<-cd[cd$Custody.Type=="Police Custody (pre-booking)",]
+  
+# Plotting data
+p5<-ggplot(data=cdt1, aes(x=factor(format(Death.Date, '%Y')),fill=Manner.Death))+geom_bar(position="dodge")+scale_fill_brewer(palette = "Set1")+guides(fill= guide_legend(title = "Manner of Death"))+xlab("Year")
+p5
+```  
+
+***  
+  
+  It is interesting to see that the number of deaths that have been deemed as `Justifiable Homicide` are much greater than `Natural causes/Illness` or `Suicide`.  
+  Another interesting aspect is that in 2015 a number of deaths were classified as `Other`.
+
+### Frame 6  
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+```  
+
+***  
+  
+  
 
 Details
 =========================================
