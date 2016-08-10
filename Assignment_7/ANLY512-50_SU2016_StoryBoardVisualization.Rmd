@@ -1,6 +1,5 @@
 ---
 title: "Story Board Visualization"
-author: "Ashish Syal, Dean Dsouza and Soujanya Bulagannawar"
 date: "`r Sys.Date()`"
 output: 
   flexdashboard::flex_dashboard:
@@ -54,68 +53,80 @@ p1
   
 ### The Age at the time of death across ethnicities shows considerable variation, especially for the male population  
 
-```{r,warning=FALSE,message=FALSE,echo=FALSE}
-p2<-ggplot(data = cd, aes(x=Sex, y=Age, colour=Ethnicity, title("Age wise distribution"))) + geom_boxplot() + coord_flip() +scale_color_brewer(palette = "Paired")
+```{r,warning=FALSE,message=FALSE,echo=FALSE,fig.align='center',fig.height=4,fig.width=7}
+p2<-ggplot(data = cd, aes(x=Sex, y=Age, colour=Ethnicity, title("Age wise distribution")))+geom_boxplot()+coord_flip()+scale_color_brewer(palette = "Paired")+theme_dark()
 p2
 ```  
 
 ***  
   
-  Another detail we can notice is that there are a few cases in which the age at the time of death was not recorded, specifically in the cases of `African-American`, `Anglo` and `Hispanic`. There is also one case in the category of unknown ethnicity.  
-  Another interesting observation that sticks out is that the inmates of `Native Hawaiin/Pacific Islander` ethnicity shows a small group of 26-50 year olds dying over the years.
-  We can also observe that in the case of female inmates, the only ethnicities observed were `African-American`, `Anglo` and `Hispanic`.  
+  + Another detail we can notice is that there are a few cases in which the age at the time of death was not recorded, specifically in the cases of __African-American__, __Anglo__ and __Hispanic__. There is also one case in the category of unknown ethnicity.
+  + Another interesting observation that sticks out is that the inmates of __Native Hawaiin/Pacific Islander__ ethnicity shows a small group of 26-50 year olds dying over the years.
+  + We can also observe that in the case of female inmates, the only ethnicities observed were __African-American__, __Anglo__ and __Hispanic__.  
   
-### On a per year basis, however,the number of deaths by ethnicity shows that the majority of deaths happen to inmates of `Anglo` ethnicity   
+### On a per year basis, however,the number of deaths by ethnicity shows that the majority of deaths happen to inmates of __Anglo__ ethnicity   
 
-```{r,warning=FALSE,message=FALSE,echo=FALSE}
-p3<-ggplot(data = cd, aes(x=factor(format(Death.Date, '%Y')) ,fill=Ethnicity))+geom_bar(position = "dodge")+scale_fill_brewer(palette = "Paired")+xlab("Year")
+```{r,warning=FALSE,message=FALSE,echo=FALSE,fig.align='center',fig.height=4,fig.width=7}
+p3<-ggplot(data = cd, aes(x=factor(format(Death.Date, '%Y')) ,fill=Ethnicity))+geom_bar(position = "dodge")+scale_fill_brewer(palette = "Paired")+xlab("Year")+theme_dark()
 p3
 ```  
 
 ***  
   
-  We can also observe that second most number of deaths was initially of the `African-American` ethnicity, but it saw a gradual drop in 2011. After 2011, the second most number of deaths varies mainly between `African-American` and `Hispanic` ethnicities.  
-  We can also see that 2015 saw the most number of deaths of `Anglo` ethnicity.  
+  + We can also observe that second most number of deaths was initially of the __African-American__ ethnicity, but it saw a gradual drop in 2011. After 2011, the second most number of deaths varies mainly between __African-American__ and __Hispanic__ ethnicities.
+  +We can also see that 2015 saw the most number of deaths of __Anglo__ ethnicity.  
   
 ### Many inmates of the dataset primarily passed away at a penitentiary, while muncipal jails saw the least number of deaths  
 
-```{r,warning=FALSE,message=FALSE,echo=FALSE}
-p4<-ggplot(data= cd, aes(x=factor(format(Death.Date, '%Y')),fill=Custody.Type))+geom_bar(position="dodge")+scale_fill_brewer(palette = "Paired")+guides(fill= guide_legend(title = "Custody Type"))+xlab("Year")
+```{r,warning=FALSE,message=FALSE,echo=FALSE,fig.align='center',fig.height=4,fig.width=7}
+p4<-ggplot(data= cd, aes(x=factor(format(Death.Date, '%Y')),fill=Custody.Type))+geom_bar(position="dodge")+scale_fill_brewer()+guides(fill= guide_legend(title = "Custody Type"))+xlab("Year")+theme_dark()
 p4
 ```  
 
 ***  
   
-  It's interesting to note that a number of deaths have taken place in police custody as compared to Muncipal Jails and County Jails. We would generally expect most deaths to happen in penitentiaries due to a number of prisoners serving life sentences or being executed there.  
-  The most interesting fact is that in recent years the number of deaths in Police Custody have increased quite a bit.  
+  + It's interesting to note that a number of deaths have taken place in police custody as compared to Muncipal Jails and County Jails. 
+  +We would generally expect most deaths to happen in penitentiaries due to a number of prisoners serving life sentences or being executed there.
+  +The most interesting fact is that in recent years the number of deaths in Police Custody have increased quite a bit.  
   
-### A larger portion of the number of deaths in police custody have been termed as `Justifiable Homicide` 
+### In the case of __Penitentiaries__ and __County Jails__, the majority of deaths are due to __Natural Causes or Illness__ with __Penitentiaries__ accounting for most of these deaths  
 
-```{r,warning=FALSE,message=FALSE,echo=FALSE}
-# Subsetting data for better understanding
-cdt1<-cd[cd$Custody.Type=="Police Custody (pre-booking)",]
+```{r,warning=FALSE,message=FALSE,echo=FALSE,fig.align='center',fig.height=4,fig.width=11}
+p6<-ggplot(data=cd, aes(x=factor(format(Death.Date, '%Y')),fill=Manner.Death))+geom_bar(position = "dodge")+scale_fill_brewer(palette = "Greens")+guides(fill= guide_legend(title = "Manner of Death"))+xlab("Year")+facet_wrap(~Custody.Type)+theme_dark()
+p6
+```  
+
+***  
+  
+  + Another aspect we can observe is that the number of deaths in __Police Custody__ that are classified as __Justfiable Homicide__ are quite high, even when compared to other institutions.
+  + Again, we see that __Muncipal Jails__ account for a few deaths comparatively.  
+  
+### For deaths in __Police Custody__ that have been deemed as __Justfiable Homicide__, a larger number of such deaths took place in 2013   
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE,fig.align='center',fig.height=4,fig.width=7}
+# Subsetting data for construction of next visualization 
+cdt1<-cd[cd$Custody.Type=="Police Custody (pre-booking)" & cd$Manner.Death=="Justifiable Homicide",]
   
 # Plotting data
-p5<-ggplot(data=cdt1, aes(x=factor(format(Death.Date, '%Y')),fill=Manner.Death))+geom_bar(position="dodge")+scale_fill_brewer(palette = "Set1")+guides(fill= guide_legend(title = "Manner of Death"))+xlab("Year")
+p5<-ggplot(data=cdt1, aes(x=factor(format(Death.Date, '%Y')),fill=Ethnicity))+geom_bar(position="dodge")+scale_fill_brewer(palette = "Paired")+xlab("Year")+theme_dark()
 p5
 ```  
 
 ***  
   
-  It is interesting to see that the number of deaths that have been deemed as `Justifiable Homicide` are much greater than `Natural causes/Illness` or `Suicide`.  
-  Another interesting aspect is that in 2015 a number of deaths were classified as `Other`.
-
-### Frame 6  
-
-```{r,warning=FALSE,message=FALSE,echo=FALSE}
-```  
-
-***  
+  + We can also see that  initially, such deaths would happen more often to inmates of __Hispanic__ ethnicity but later years saw more of a blance between __Anglo__ and __Hispanic__ ethnicities.
+  + It is interesting to see that the inmates whose ethnicity was classified as __Other/Don't Know__ have dates of death only in the year 2015.
+  + Another observation that can be made is that the number of deaths of __Anglo__ ethnicity inmates, whose death was classified as __Justifiable Homicide__, seemd to have spiked to the highest amount in 2013 (which is the most number of such deaths across ethnicities).  
   
-  
-
 Details
 =========================================
 
 Column
 -----------------------------------------
+
+### Team Members:  
+  + Ashish Syal
+  + Dean D'souza
+  + SoujanyaPrakash Bulagannawar
+  
+  
