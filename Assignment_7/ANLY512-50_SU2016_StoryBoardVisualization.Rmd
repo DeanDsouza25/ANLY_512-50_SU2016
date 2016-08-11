@@ -10,7 +10,9 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+# Loading required libraries
 library(flexdashboard)
+library(readr)
 library(ggplot2)
 library(plotly)
 ```
@@ -19,11 +21,6 @@ Analysis {.storyboard}
 =========================================
 
 ```{r,warning=FALSE,message=FALSE,echo=FALSE}
-# Loading required Libraries
-library(readr)
-library(ggplot2)
-library(plotly)
-
 #Setting up the data object due to issues regarding parsing of .csv file
 cdt <- read_csv("C:/Users/demon/Desktop/custodial-deaths.csv")
 cd<-cdt[,1:12]
