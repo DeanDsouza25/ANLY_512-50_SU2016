@@ -132,7 +132,7 @@ p7<-ggplot(data=disp, aes(x=Department.Name, fill=Department.Name))+geom_bar()+t
 
 ***  
   
-  + There are two departments with the same amount of such occurences, namely __Dallas Police Department__ and __San Antonio Police Department with __61__ of such occurences.
+  + There are two departments with the same amount of such occurences, namely __Dallas Police Department__ and __San Antonio Police Department__ with __61__ of such occurences.
   + While not shown here, there are approximately 117 more departments where such occurences have taken place over the years, but these are usually of the order of 1 to 3.  
   
 Details
