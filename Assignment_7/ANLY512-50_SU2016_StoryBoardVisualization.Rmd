@@ -77,8 +77,8 @@ p3
 ### On a yearly basis, one can observe that __Penitantiaries__ and __County Jails__ account for most of the deaths classified as __Natural Causes/Illness__  
 
 ```{r,warning=FALSE,message=FALSE,echo=FALSE,fig.align='center',fig.height=6,fig.width=11}
-p6<-ggplot(data=cd, aes(x=factor(format(Death.Date, '%Y')),fill=Manner.Death))+geom_bar(position = "dodge")+scale_fill_brewer()+guides(fill= guide_legend(title = "Manner of Death"))+xlab("Year")+facet_wrap(~Custody.Type)+theme_dark()
-p6
+p4<-ggplot(data=cd, aes(x=factor(format(Death.Date, '%Y')),fill=Manner.Death))+geom_bar(position = "dodge")+scale_fill_brewer()+guides(fill= guide_legend(title = "Manner of Death"))+xlab("Year")+facet_wrap(~Custody.Type)+theme_dark()
+p4
 ```  
 
 ***  
@@ -107,14 +107,33 @@ p5
 ### Generally, deaths in __Police Custody__ which are classified as __Justifiable Homicide__ tends to happen to inmates in an age range of 20-40 across ethnicities  
 
 ```{r,warning=FALSE,message=FALSE,echo=FALSE,fig.align='center',fig.height=4,fig.width=7}
-p4<-ggplot(data= cdt1, aes(x=Sex,y=Age,fill=Ethnicity))+geom_boxplot()+coord_flip()+scale_fill_brewer(palette = "Paired")+theme_dark()
-p4
+p6<-ggplot(data= cdt1, aes(x=Sex,y=Age,fill=Ethnicity))+geom_boxplot()+coord_flip()+scale_fill_brewer(palette = "Paired")+theme_dark()
+p6
 ```  
 
 ***  
   
   + Another observation that can be made is that there a number of outliers in the case of __Male__ inmates of __African-American__ and __Hispanic__ descent who have died in this way, whose age was above 50.  
   + There were also comparatiely less __Female__ inmates of __Hispanic__ descent who died this way (Usually of 50 years of age approximately), and also comparatively less __Male__ inmates whose ethnicity was unknown.  
+  
+### The Department where such deaths occured the most is the __Houston Police Department__ with __97__ of such occurences  
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE,fig.align='center',fig.height=4,fig.width=7}
+# Calculating top 5 departments
+cdfreq<-data.frame(table(cdt1$Department.Name))
+cdfreq1<-cdfreq[order(-cdfreq$Freq),]
+temp<-cdfreq1[1:5,]
+disp<-cdt1[(cdt1$Department.Name=="Houston Police Dept.")|(cdt1$Department.Name=="San Antonio Police Dept.")|(cdt1$Department.Name=="Dallas Police Dept.")|(cdt1$Department.Name=="Texas Department Of Public Safety")|(cdt1$Department.Name=="Fort Worth Police Dept."),]
+
+# Plotting an interactive graph
+p7<-ggplot(data=disp, aes(x=Department.Name, fill=Department.Name))+geom_bar()+theme_light()+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+xlab("Department Name")
+(gg<-ggplotly(p7))
+```  
+
+***  
+  
+  + There are two departments with the same amount of such occurences, namely __Dallas Police Department__ and __San Antonio Police Department with __61__ of such occurences.
+  + While not shown here, there are approximately 117 more departments where such occurences have taken place over the years, but these are usually of the order of 1 to 3.  
   
 Details
 =========================================
